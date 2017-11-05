@@ -1,9 +1,10 @@
 
 /*----------------------------------------------------------------
-
 Copyright (C) 2017 Stefano. All rights reserved.
+
 setpixel(), accomplished the funchtion which could draw a single pixel.
-svpng() is from https://github.com/miloyip/svpng，by Miloyip.
+
+svpng() is from https://github.com/miloyip/svpng, by Miloyip.
 
 ! \file	setPixel.cpp
 \brief      setPixel() is a C++ function for drawing a pixel.
