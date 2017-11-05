@@ -1,16 +1,17 @@
-/*----------------------------------------------------------------
- Copyright (C) 2017 Stefano. All rights reserved.
 
- setpixel(), accomplished the funchtion which could draw a single pixel.
- svpng() is from https://github.com/miloyip/svpng，by Miloyip.
- 
- /*! \file	setPixel.cpp
-    \brief      setPixel() is a C++ function for drawing a pixel.
-    \author     Stefano
-    \version    1.0.0.171105
-    \copyright  
-    \sa         https://github.com/L-Stefano/Computer-Graphic-Rasterize/blob/master/setPixel.cpp
-*/
+/*----------------------------------------------------------------
+
+Copyright (C) 2017 Stefano. All rights reserved.
+setpixel(), accomplished the funchtion which could draw a single pixel.
+svpng() is from https://github.com/miloyip/svpng，by Miloyip.
+
+! \file	setPixel.cpp
+\brief      setPixel() is a C++ function for drawing a pixel.
+\author     Stefano
+\version    1.0.0.171105
+\copyright
+\sa         https://github.com/L-Stefano/Computer-Graphic-Rasterize/blob/master/setPixel.cpp
+!
 ----------------------------------------------------------------*/
 
 #include "svpng.h"
