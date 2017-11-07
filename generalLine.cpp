@@ -8,13 +8,16 @@ Due to the complexity of multiplication 'kx', this method is not advocating use.
 svpng() is from https://github.com/miloyip/svpng, by Miloyip.
 
 ! 
-\file			generalLine.cpp
-\brief        generalLine() is a C++ function for drawing a line with the general form y=kx+b.
+\file	    generalLine.cpp
+\brief      generalLine() is a C++ function for drawing a line with the general form y=kx+b.
 \author     Stefano
 \version    1.0.2.171107
 \copyright
 \sa         https://github.com/L-Stefano/Computer-Graphic-Rasterize/blob/master/generalLine.cpp
 !
+----------------------------------------------------------------
+In addition, it is necessary to note that the pixel distribution of the X coordinate axis is uniform, 
+but it is not the same for the Y axis.
 ----------------------------------------------------------------*/
 
 #include "svpng.h"
