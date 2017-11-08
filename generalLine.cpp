@@ -25,7 +25,7 @@ const unsigned W = 256;  //Weight
 const unsigned H = 256;  //Height
 unsigned char rgb[W * H * 3], *p = rgb;
 
-struct color { unsigned char R, G, B; };
+struct color { unsigned char R, G, B; }RGB;
 
 void setPixel(int x, int y,color color)  //x and y are coordinate which you want to draw.
 {
@@ -65,7 +65,7 @@ void generalLine(int x1, int y1, int x2, int y2,color color)  //Using general fo
 void main(void) {
 	FILE *fp = fopen("rgb.png", "wb");
 	unsigned x, y;
-	color RGB{255,255,255};
+	RGB{255,255,255};
 
 	for (x = 0; x < 256; x++)
 		for (y = 0; y < 256 ; y++)
