@@ -20,7 +20,6 @@ In addition, it is necessary to note that the pixel distribution of the X coordi
 ----------------------------------------------------------------*/
 
 #include "svpng.h"
-#include <Windows.h>
 #include <math.h>
 const unsigned W = 256;  //Weight
 const unsigned H = 256;  //Height
