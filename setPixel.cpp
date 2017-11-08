@@ -27,7 +27,6 @@ void setPixel(int x, int y)  //x and y are coordinate which you want to draw.
 	*p++ = 255;  /* R */
 	*p++ = 255;  /* G */
 	*p++ = 255;  /* B */
-
 }
 
 void main(void) {
