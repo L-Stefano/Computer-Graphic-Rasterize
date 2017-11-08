@@ -14,7 +14,7 @@ svpng() is from https://github.com/miloyip/svpng, by Miloyip.
 \version    1.0.3.171108
 \copyright
 \sa         https://github.com/L-Stefano/Computer-Graphic-Rasterize/blob/master/generalLine.cpp
-!
+! 
 ----------------------------------------------------------------
 In addition, it is necessary to note that the pixel distribution of the X coordinate axis is uniform, but it is not the same for the Y axis. (Solved in 1.0.3.171108)
 ----------------------------------------------------------------*/
