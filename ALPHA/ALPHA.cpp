@@ -11,7 +11,7 @@ svpng() is from https://github.com/miloyip/svpng, by Miloyip.
 \author     Stefano
 \version    1.0.0.171130
 \copyright
-\sa         https://github.com/L-Stefano/Computer-Graphic-Rasterize/blob/master/ALPHA.cpp
+\sa         https://github.com/L-Stefano/Computer-Graphic-Rasterize/edit/master/ALPHA/ALPHA.cpp
 !
 ----------------------------------------------------------------*/
 
