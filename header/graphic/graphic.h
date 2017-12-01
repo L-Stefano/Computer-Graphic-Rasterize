@@ -62,8 +62,8 @@ updates:
 	///求向量a与向量b之间的距离，返回double
 	inline double  distance(const Vector2D &a, const Vector2D &b)
 	{
-		float dx = a.x - b.x;
-		float dy = a.y - b.y;
+		double dx = a.x - b.x;
+		double dy = a.y - b.y;
 		return sqrt(dx*dx + dy*dy);
 	}
 	///标量左乘（类内的另一个重载函数为右乘）
