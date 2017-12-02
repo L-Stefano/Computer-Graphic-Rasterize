@@ -14,7 +14,8 @@
  │ └graphic：
  │    ├graphic.h：步步完善，最终会成为一个较为完整的图形学综合库。
  │    ├Vector2D：Vector2D类的实现文件。
- ╰    └Vector3D：Vector3D类的实现文件。
+ │    ├Vector3D：Vector3D类的实现文件。
+ ╰    └graphic.lib：编译好的静态库，需配合graphic.h食用（#include "graphic.h" #pragma comment(lib,"graphic.lib")）。
  
  ╭ALPHA：实现了一个用阿尔法通道的融合方程暴力计算颜色值的效果。（待加入graphic.h）
  │ ├ALPHA.cpp
