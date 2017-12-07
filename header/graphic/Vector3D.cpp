@@ -5,8 +5,8 @@ Implementation file of graphic.h: Vector3D.cpp
 ------------------------------------------------------------------
 
 !
-\file	    graphic.h
-\brief      Implementation file of graphic.h: Vector3D.cpp
+\file	    Vector3D.cpp
+\brief      Implementation file of Vector3D of graphic.h.
 \author     Stefano
 \version    1.0.0.171201
 \copyright
@@ -16,12 +16,14 @@ Implementation file of graphic.h: Vector3D.cpp
 ----------------------------------------------------------------
 updates:
 ----------------------------------------------------------------*/
-
 #include "graphic.h"
-Vector3D::Vector3D() {}//é»˜è®¤æž„é€ å‡½æ•°
-Vector3D::Vector3D(double a, double b, double c):x(a),y(b),z(c){}//æž„é€ å‡½æ•°
-Vector3D::Vector3D(const Vector3D & a) : x(a.x), y(a.y), z(a.z) {}//æ‹·è´æž„é€ å‡½æ•°
-void Vector3D::normorlize()//æ ‡å‡†åŒ–
+
+Vector3D::Vector3D() {}//Ä¬ÈÏ¹¹Ôìº¯Êý
+Vector3D::Vector3D(double a, double b, double c):x(a),y(b),z(c){}//¹¹Ôìº¯Êý
+Vector3D::Vector3D(const Vector3D & a) : x(a.x), y(a.y), z(a.z) {}
+Vector3D::Vector3D(const Vector2D & a) : x(a.x), y(a.y), z(0) {}
+//¿½±´¹¹Ôìº¯Êý
+void Vector3D::normorlize()//±ê×¼»¯
 {
 	double length = this->norm();
 	if (length > 0.0f)
@@ -31,7 +33,7 @@ void Vector3D::normorlize()//æ ‡å‡†åŒ–
 		this->z = this->z / length;
 	}
 }
-double Vector3D::norm(void)//æ±‚æ¨¡
+double Vector3D::norm(void)//ÇóÄ£
 {
 	return sqrt((pow((this->x), 2) + pow((this->y), 2) + pow((this->z), 2)));
 }

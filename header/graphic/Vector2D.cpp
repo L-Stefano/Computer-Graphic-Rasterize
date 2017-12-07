@@ -5,8 +5,8 @@ Implementation file of graphic.h: Vector2D.cpp
 ------------------------------------------------------------------
 
 !
-\file	    graphic.h
-\brief      Implementation file of graphic.h: Vector2D.cpp
+\file	    Vector2D.cpp
+\brief      Implementation file of class Vector2D of graphic.h.
 \author     Stefano
 \version    1.0.0.171201
 \copyright
@@ -16,16 +16,18 @@ Implementation file of graphic.h: Vector2D.cpp
 ----------------------------------------------------------------
 updates:
 ----------------------------------------------------------------*/
-
 #include "graphic.h"
+
 Vector2D::Vector2D(){}
-Vector2D::Vector2D(double x, double y): x(x), y(y) {}//æž„é€ å‡½æ•°ä¼ å€¼
-Vector2D::Vector2D(const Vector2D & a) : x(a.x), y(a.y) {}//æ‹·è´æž„é€ å‡½æ•°
-double Vector2D::norm(void)//æ±‚æ¨¡
+Vector2D::Vector2D(double x, double y): x(x), y(y) {}//¹¹Ôìº¯Êý´«Öµ
+Vector2D::Vector2D(const Vector2D &a) : x(a.x), y(a.y) {}
+
+//¿½±´¹¹Ôìº¯Êý
+double Vector2D::norm(void)//ÇóÄ£
 {
 	return sqrt((pow((this->x), 2) + (pow((this->y), 2))));
 }
-void Vector2D::normorlize()//æ ‡å‡†åŒ–
+void Vector2D::normorlize()//±ê×¼»¯
 {
 	double length = this->norm();
 	if (length > 0.0f)

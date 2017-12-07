@@ -1,9 +1,10 @@
+#pragma once
 /*----------------------------------------------------------------
 Copyright (C) 2017 Stefano. All rights reserved.
 Vector2D: Addition, Subtract, Dot product, Scalar multiplication, Boolean Comparison, Normorlize, Length(norm),Distance of 2 2d vector.
-	implementation file: Vector2D.cpp
+implementation file: Vector2D.cpp
 Vector3D: Addition, Subtract, Dot product, Scalar multiplication, Cross product,Boolean Comparison, Normorlize, Length(norm), Distance of 2 3d vector.
-	implementation file: Vector3D.cpp
+implementation file: Vector3D.cpp
 RGB:
 hVector:
 image:
@@ -24,95 +25,214 @@ svpng() is from https://github.com/miloyip/svpng, by Miloyip.
 ----------------------------------------------------------------
 updates:
 ----------------------------------------------------------------*/
-
 #ifndef GRAPHIC_H
 #define GRAPHIC_H
+/*-------------------
+headers
+-------------------*/
 
 #ifndef MATH
 #include<math.h>
 #include<cmath>
+#include <iostream>
 #define MATH
 #endif // !MATH
 
-//class Vector2D
-	class Vector2D
-	{
+
+
+/*-------------------
+global constant
+-------------------*/
+
+#define BYTE unsigned char 
+const unsigned W = 256;  //Weight
+const unsigned H = 256;  //Height
+
+/*-------------------
+class Vector2D
+-------------------*/
+
+class Vector2D
+{
+public:
+	double x, y;
+	Vector2D();//Ä¬ÈÏ¹¹Ôìº¯Êı
+	Vector2D(double, double);//¹¹Ôìº¯Êı³õÊ¼»¯·ÖÁ¿
+	Vector2D(const Vector2D &);//¿½±´¹¹Ôìº¯Êı
+
+
+	inline Vector2D & Vector2D::operator=(const Vector2D & rhs) { x = rhs.x, y = rhs.y; return *this; }//ÖØÔØ¸³Öµ
+	inline Vector2D Vector2D::operator+(const Vector2D & rhs) { return Vector2D(this->x + rhs.x, this->y + rhs.y); }//ÏòÁ¿Ïà¼Ó
+	inline Vector2D Vector2D::operator-(const Vector2D & rhs) { return Vector2D(this->x - rhs.x, this->y - rhs.y); }//ÏòÁ¿Ïà¼õ
+	inline Vector2D operator/(double a) const { return Vector2D(x / a, y / a); }//±êÁ¿³ı·¨
+	inline Vector2D operator*(double a) const { return Vector2D(x*a, y*a); }//±êÁ¿³Ë»ı
+	inline double Vector2D::operator*(const Vector2D & rhs) { return this->x * rhs.x + this->y * rhs.y; }//ÏòÁ¿µã»ı
+	inline bool operator ==(const Vector2D &a)const { return x == a.x&&y == a.y; }//ÖØÔØ==
+	inline bool operator !=(const Vector2D &a) const { return x != a.x || y != a.y; }//ÖØÔØ!=
+	inline Vector2D &operator +=(const Vector2D &a) { x += a.x, y += a.y; return *this; }//ÖØÔØ+=
+	inline Vector2D &operator -=(const Vector2D &a) { x -= a.x, y -= a.y; return *this; }//ÖØÔØ-=
+	inline Vector2D &operator *=(double a) { x *= a, y *= a; return *this; }//ÖØÔØ*=
+	inline Vector2D &operator /=(double a) { double oneOverA = 1.0f / a; x *= oneOverA, y *= oneOverA; return *this; };//ÖØÔØ/=
+
+	void normorlize();	//±ê×¼»¯
+	double norm(void);//ÇóÄ£³¤
+};
+///ÇóÏòÁ¿aÓëÏòÁ¿bÖ®¼äµÄ¾àÀë£¬·µ»Ødouble
+inline double  distance(const Vector2D &a, const Vector2D &b)
+{
+	double dx = a.x - b.x;
+	double dy = a.y - b.y;
+	return sqrt(dx*dx + dy*dy);
+}
+///±êÁ¿×ó³Ë£¨ÀàÄÚµÄÁíÒ»¸öÖØÔØº¯ÊıÎªÓÒ³Ë£©
+inline Vector2D operator *(float k, const Vector2D &v)
+{
+	return Vector2D(k*v.x, k*v.y);
+}
+
+/*-------------------
+class Vector3D
+-------------------*/
+
+class Vector3D
+{
+public:
+	double x, y, z;
+	Vector3D();//Ä¬ÈÏ¹¹Ôìº¯Êı
+	Vector3D(double, double, double);//¹¹Ôìº¯Êı³õÊ¼»¯·ÖÁ¿
+	Vector3D(const Vector3D &);//¿½±´¹¹Ôìº¯Êı
+	Vector3D(const Vector2D &);//¿½±´¹¹Ôìº¯Êı
+
+	inline Vector3D & Vector3D::operator=(const Vector3D & rhs) { x = rhs.x, y = rhs.y, z = rhs.z; return *this; }//ÖØÔØ¸³Öµ
+
+	inline Vector3D Vector3D::operator+(const Vector3D & rhs) { return Vector3D(this->x + rhs.x, this->y + rhs.y, this->z + rhs.z); }//ÏòÁ¿Ïà¼Ó
+	inline Vector3D Vector3D::operator-(const Vector3D & rhs) { return Vector3D(this->x - rhs.x, this->y - rhs.y, this->z - rhs.z); }//ÏòÁ¿Ïà¼õ
+	inline Vector3D operator/(double a) const { return Vector3D(x / a, y / a, z / a); }//±êÁ¿³ı·¨
+	inline Vector3D operator*(double a) const { return Vector3D(x*a, y*a, z*a); }//±êÁ¿³Ë»ı
+	inline double Vector3D::operator*(const Vector3D & rhs) { return this->x * rhs.x + this->y * rhs.y + this->z*rhs.z; }//ÏòÁ¿µã»ı
+	inline bool operator ==(const Vector3D &a)const { return x == a.x&&y == a.y&&z == a.z; }//ÖØÔØ==
+	inline bool operator !=(const Vector3D &a) const { return x != a.x || y != a.y || z != a.z; }//ÖØÔØ!=
+	inline Vector3D &operator +=(const Vector3D &a) { x += a.x, y += a.y, z += a.z; return *this; }//ÖØÔØ+=
+	inline Vector3D &operator -=(const Vector3D &a) { x -= a.x, y -= a.y, z -= a.z; return *this; }//ÖØÔØ-=
+	inline Vector3D &operator *=(double a) { x *= a, y *= a, z *= a;; return *this; }//ÖØÔØ*=
+	inline Vector3D &operator /=(double a) { double oneOverA = 1.0f / a; x *= oneOverA, y *= oneOverA, z *= oneOverA; return *this; };//ÖØÔØ/=																					
+
+	void normorlize();	//±ê×¼»¯
+	double norm(void);//ÇóÄ£³¤
+};
+///ÇóÏòÁ¿aÓëÏòÁ¿bÖ®¼äµÄ¾àÀë£¬·µ»Ødouble
+inline Vector3D crossProduct(const Vector3D&a, const Vector3D&b) { return Vector3D(a.y*b.z - a.z*b.y, a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x); };//ÏòÁ¿²æ»ı
+
+inline double distance(const Vector3D &a, const Vector3D &b)
+{
+	double dx = a.x - b.x;
+	double dy = a.y - b.y;
+	double dz = a.z - b.z;
+	return sqrt(dx*dx + dy*dy + dz*dz);
+}
+///±êÁ¿×ó³Ë£¨ÀàÄÚµÄÁíÒ»¸öÖØÔØº¯ÊıÎªÓÒ³Ë£©
+inline Vector3D operator *(float k, const Vector3D &v)
+{
+	return Vector3D(k*v.x, k*v.y, k*v.z);
+}
+
+/*-------------------
+class RGB
+-------------------*/
+
+class RGB
+{
 	public:
-		double x, y;
-		Vector2D();//é»˜è®¤æ„é€ å‡½æ•°
-		Vector2D(double, double);//æ„é€ å‡½æ•°åˆå§‹åŒ–åˆ†é‡
-		Vector2D(const Vector2D & a);//æ‹·è´æ„é€ å‡½æ•°
+	BYTE r, g, b;
+	RGB();
+	RGB(BYTE, BYTE, BYTE);
+	RGB(float, float, float);
+	RGB(RGB&);
+	inline RGB & operator=(const RGB & rhs) { r = rhs.r, g = rhs.g, b = rhs.b; return *this; }//ÖØÔØ¸³Öµ
 
-		inline Vector2D & Vector2D::operator=(const Vector2D & rhs) { x = rhs.x, y = rhs.y; return *this; }//é‡è½½èµ‹å€¼
-		inline Vector2D Vector2D::operator+(const Vector2D & rhs) { return Vector2D(this->x + rhs.x, this->y + rhs.y); }//å‘é‡ç›¸åŠ 
-		inline Vector2D Vector2D::operator-(const Vector2D & rhs) { return Vector2D(this->x - rhs.x, this->y - rhs.y); }//å‘é‡ç›¸å‡
-		inline Vector2D operator/(double a) const { return Vector2D(x / a, y / a); }//æ ‡é‡é™¤æ³•
-		inline Vector2D operator*(double a) const { return Vector2D(x*a, y*a); }//æ ‡é‡ä¹˜ç§¯
-		inline double Vector2D::operator*(const Vector2D & rhs) { return this->x * rhs.x + this->y * rhs.y; }//å‘é‡ç‚¹ç§¯
-		inline bool operator ==(const Vector2D &a)const { return x == a.x&&y == a.y; }//é‡è½½==
-		inline bool operator !=(const Vector2D &a) const { return x != a.x || y != a.y; }//é‡è½½!=
-		inline Vector2D &operator +=(const Vector2D &a) { x += a.x, y += a.y; return *this; }//é‡è½½+=
-		inline Vector2D &operator -=(const Vector2D &a) { x -= a.x, y -= a.y; return *this; }//é‡è½½-=
-		inline Vector2D &operator *=(double a) { x *= a, y *= a; return *this; }//é‡è½½*=
-		inline Vector2D &operator /=(double a) { double oneOverA = 1.0f / a; x *= oneOverA, y *= oneOverA; return *this; };//é‡è½½/=
+	inline RGB operator+(const RGB& rhs) { return RGB((BYTE)(this->r + rhs.r), this->g + rhs.g, this->b + rhs.b); }//ÖØÔØ+ÔËËã·û
+	inline RGB operator-(const RGB& rhs) { return RGB((BYTE)(this->r - rhs.r), this->g - rhs.g, this->b - rhs.b); }//ÖØÔØ+ÔËËã·û
+	inline RGB operator/(double a) const { return RGB((BYTE)(this->r / a), this->g / a, this->b / a); }//±êÁ¿³ı·¨
+	inline RGB operator*(double a) const { return RGB((BYTE)(this->r *a), this->g*a, this->b*a); }//±êÁ¿³Ë»ı
+	inline RGB& operator +=(const RGB &rhs) { this->r += rhs.r, this->g += rhs.g, this->b += rhs.b; return *this; }//ÖØÔØ+=
+	inline RGB& operator -=(const RGB &rhs) { this->r += rhs.r, this->g += rhs.g, this->b += rhs.b; }//ÖØÔØ-=
+	inline RGB &operator *=(double a) { this->r *= a, this->g *= a, this->b *= a; return *this; }//ÖØÔØ*=
+	inline RGB &operator /=(double a) { double oneOverA = 1.0f / a; this->r *= oneOverA, this->g *= oneOverA, this->b *= oneOverA; return *this; }//ÖØÔØ/=			
+	inline void operator ()(BYTE r, BYTE g, BYTE b) { this->r = r, this->g = g, this->b = b; }//ÖØÔØ()
+};
+///Ö±½Ó¼ÆËãalpha»ìºÏºóµÄÏñËØÖµ
+inline RGB alphaMix(RGB cf, RGB cb, double alpha)
+{
+	if (alpha >= 0.0f&&alpha <= 1.0f)
+		return cf*alpha + cb*(1 - alpha);
+	else
+		throw "alphaÈ¡Öµ·¶Î§Îª0.0-1.0";
 
-		void normorlize();	//æ ‡å‡†åŒ–
-		double norm(void);//æ±‚æ¨¡é•¿
-	};
-	///æ±‚å‘é‡aä¸å‘é‡bä¹‹é—´çš„è·ç¦»ï¼Œè¿”å›double
-	inline double  distance(const Vector2D &a, const Vector2D &b)
-	{
-		double dx = a.x - b.x;
-		double dy = a.y - b.y;
-		return sqrt(dx*dx + dy*dy);
-	}
-	///æ ‡é‡å·¦ä¹˜ï¼ˆç±»å†…çš„å¦ä¸€ä¸ªé‡è½½å‡½æ•°ä¸ºå³ä¹˜ï¼‰
-	inline Vector2D operator *(float k, const Vector2D &v)
-	{
-		return Vector2D(k*v.x, k*v.y);
-	}
+}
+///±êÁ¿×ó³Ë£¨ÀàÄÚµÄÁíÒ»¸öÖØÔØº¯ÊıÎªÓÒ³Ë£©
+inline RGB operator *(float k, const RGB &v)
+{
+	return RGB((BYTE)(k*v.r), (BYTE)(k*v.g), (BYTE)(k*v.b));
+}
+
+/*-------------------
+class Rasterize
+-------------------*/
+
+class Rasterize
+{
+private:
+	Rasterize operator=(const Rasterize &);
+	Rasterize(Rasterize&);
+	BYTE *rgb, *prgb;
+public:
+	Rasterize() = default;
+	Rasterize(BYTE*,BYTE*);
+	//image(image&);
+
+	void setPixel(int , int , RGB );//ÉèÖÃµ¥µãÏñËØ
+	void setPixel(Vector2D, RGB);//ÉèÖÃµ¥µãÏñËØ
+
+	void generalLine(int , int , int , int , RGB );//Ò»°ã·½³Ì»æÖÆÖ±Ïß£¨²»¿ÉÈ¡£©
+	void generalLine(Vector2D p1,Vector2D p2, RGB);//Ò»°ã·½³Ì»æÖÆÖ±Ïß£¨²»¿ÉÈ¡£©
+
+	void midLine(int, int, int, int, RGB);	//»ùÓÚÒşÊ½Ö±Ïß·½³ÌµÄÖĞµãËã·¨
+	void midLine(Vector2D p1, Vector2D p2, RGB color);	//»ùÓÚÒşÊ½Ö±Ïß·½³ÌµÄÖĞµãËã·¨
+
+	void paraLine(int x1, int y1, int x2, int y2, RGB cp1, RGB cp2);//»ùÓÚ²ÎÊı·½³ÌÖ±Ïß»æÖÆ
+	void paraLine(Vector2D, Vector2D, RGB, RGB);//»ùÓÚ²ÎÊı·½³ÌÖ±Ïß»æÖÆ
+
+};
+/*-------------------
+class Triangle
+-------------------*/
+
+class Triangle
+{
+private:
+	Vector3D p1, p2, p3,n; //Èı½ÇĞÎµÄÈı¸öµãºÍ·¨ÏòÁ¿
+public:
+	friend class Rasterize;
+	Triangle(Vector3D p1, Vector3D p2, Vector3D p3);//¹¹Ôìº¯Êı
+	Triangle(Vector2D p1, Vector2D p2, Vector2D p3);//¹¹Ôìº¯Êı£¨×¢Òâ£º±¾ÀàÃ»ÓĞÄ¬ÈÏ¹¹Ôìº¯Êı£©
+
+	Vector3D getBarycentriccoordinate(Vector2D);
+	double getArea();
+
+	
+};
 
 
-//class Vector3D
+/*-------------------
+class Image
+-------------------*/
+class Image
+{
+public:
+	BYTE rgb[W * H * 3], *prgb = rgb;
+	Image() = default;
+	//image(image&);
 
-	class Vector3D
-	{
-	public:
-		double x, y, z;
-		Vector3D();//é»˜è®¤æ„é€ å‡½æ•°
-		Vector3D(double, double, double);//æ„é€ å‡½æ•°åˆå§‹åŒ–åˆ†é‡
-		Vector3D(const Vector3D & a);//æ‹·è´æ„é€ å‡½æ•°
-
-		inline Vector3D & Vector3D::operator=(const Vector3D & rhs) { x = rhs.x, y = rhs.y,z=rhs.z; return *this; }//é‡è½½èµ‹å€¼
-		inline Vector3D Vector3D::operator+(const Vector3D & rhs) { return Vector3D(this->x + rhs.x, this->y + rhs.y, this->z + rhs.z); }//å‘é‡ç›¸åŠ 
-		inline Vector3D Vector3D::operator-(const Vector3D & rhs) { return Vector3D(this->x - rhs.x, this->y - rhs.y, this->z - rhs.z); }//å‘é‡ç›¸å‡
-		inline Vector3D operator/(double a) const { return Vector3D(x / a, y / a, z / a); }//æ ‡é‡é™¤æ³•
-		inline Vector3D operator*(double a) const { return Vector3D(x*a, y*a, z*a); }//æ ‡é‡ä¹˜ç§¯
-		inline double Vector3D::operator*(const Vector3D & rhs) { return this->x * rhs.x + this->y * rhs.y+this->z*rhs.z; }//å‘é‡ç‚¹ç§¯
-		inline bool operator ==(const Vector3D &a)const { return x == a.x&&y == a.y&&z == a.z; }//é‡è½½==
-		inline bool operator !=(const Vector3D &a) const { return x != a.x || y != a.y || z!=a.z; }//é‡è½½!=
-		inline Vector3D &operator +=(const Vector3D &a) { x += a.x, y += a.y, z += a.z; return *this; }//é‡è½½+=
-		inline Vector3D &operator -=(const Vector3D &a) { x -= a.x, y -= a.y, z -= a.z; return *this; }//é‡è½½-=
-		inline Vector3D &operator *=(double a) { x *= a, y *= a, z *= a;; return *this; }//é‡è½½*=
-		inline Vector3D &operator /=(double a) { double oneOverA = 1.0f / a; x *= oneOverA, y *= oneOverA, z *= oneOverA; return *this; };//é‡è½½/=																					
-		inline Vector3D crossProduct(const Vector3D&a, const Vector3D&b) {return Vector3D(a.y*b.z - a.z*b.y,a.z*b.x - a.x*b.z,a.x*b.y - a.y*b.x);};//å‘é‡å‰ç§¯
-																														   
-		void normorlize();	//æ ‡å‡†åŒ–
-		double norm(void);//æ±‚æ¨¡é•¿
-	};
-	///æ±‚å‘é‡aä¸å‘é‡bä¹‹é—´çš„è·ç¦»ï¼Œè¿”å›double
-	inline double  distance(const Vector3D &a, const Vector3D &b)
-	{
-		double dx = a.x - b.x;
-		double dy = a.y - b.y;
-		double dz = a.z - b.z;
-		return sqrt(dx*dx + dy*dy+dz*dz);
-	}
-	///æ ‡é‡å·¦ä¹˜ï¼ˆç±»å†…çš„å¦ä¸€ä¸ªé‡è½½å‡½æ•°ä¸ºå³ä¹˜ï¼‰
-	inline Vector3D operator *(float k, const Vector3D &v)
-	{
-		return Vector3D(k*v.x, k*v.y, k*v.z);
-	}
-
-
+	void exprortPNG(char * name);//Êä³öPNGÍ¼Æ¬
+};
 #endif // !GRAPHIC_H
