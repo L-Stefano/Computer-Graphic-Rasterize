@@ -27,7 +27,7 @@ Triangle::Triangle(Vector2D p1, Vector2D p2, Vector2D p3) : p1(p1), p2(p2), p3(p
 {
 	n = crossProduct((p1 - p2), (p3 - p2));
 }
-Vector3D Triangle::getBarycentriccoordinate(Vector2D a)
+Vector3D Triangle::getBarycentricCoordinate(Vector2D a)
 {
 	Vector3D result;
 	double f01= (p1.y - p2.y)*a.x + (p2.x - p1.x)*a.y + p1.x*p2.y - p2.x*p1.y;
