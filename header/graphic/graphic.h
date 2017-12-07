@@ -216,7 +216,7 @@ public:
 	Triangle(Vector3D p1, Vector3D p2, Vector3D p3);//构造函数
 	Triangle(Vector2D p1, Vector2D p2, Vector2D p3);//构造函数（注意：本类没有默认构造函数）
 
-	Vector3D getBarycentriCcoordinate(Vector2D);//获取重心坐标系的重心坐标
+	Vector3D getBarycentricCoordinate(Vector2D);//获取重心坐标系的重心坐标
 	double getArea();
 
 	
