@@ -16,9 +16,11 @@
 7. 双线程并行光栅化三角形片元（效果不好）
 
 最近点采样：
+
 ![Image text](https://github.com/L-Stefano/Computer-Graphic-Rasterize/blob/master/img/pic_point_sampling.png)
 
 双线性过滤：
+
 ![Image text](https://github.com/L-Stefano/Computer-Graphic-Rasterize/blob/master/img/pic_bilinear.png)
 
 ![Image text](https://github.com/L-Stefano/Computer-Graphic-Rasterize/blob/master/img/pic_1.png)
