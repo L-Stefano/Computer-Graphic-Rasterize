@@ -4,7 +4,6 @@
 #include<time.h>
 #include<string>
 
-#include<SDL_ttf.h>
 #include"SDLINIT.h"
 #include"Image.h"
 #include"Math3D.h"
@@ -13,19 +12,19 @@
 #include"Transformation.h"
 
 using namespace std;
-/*³£Á¿*/
-const int Width = 800;//Êµ¼Ê×ø±ê·¶Î§[0,W-1]
-const int Height = 600;//Êµ¼Ê×ø±ê·¶Î§[0,H-1]
-const SDL_Rect r{ 0,0,Width,Height };//ÇåÆÁÓÃ
+/*å¸¸é‡*/
+const int Width = 800;//å®é™…åæ ‡èŒƒå›´[0,W-1]
+const int Height = 600;//å®é™…åæ ‡èŒƒå›´[0,H-1]
+const SDL_Rect r{ 0,0,Width,Height };//æ¸…å±ç”¨
 float FPS = 0;
-int index=0;//ÓÃÓÚFPSµÄ²ÉÑùÖÜÆÚ
+int index=0;//ç”¨äºFPSçš„é‡‡æ ·å‘¨æœŸ
 string fps;
 
-//³õÊ¼»¯ÉãÏñ»ú
+//åˆå§‹åŒ–æ‘„åƒæœº
 camera_UVN camera(Vector4D(0, 0, 0), Vector4D(1.15, 1.2, -1.2), 200,2, Width - 1, Height - 1,105);
-//³õÊ¼»¯ÎïÌå
+//åˆå§‹åŒ–ç‰©ä½“
 Geom_Object object;
-//³õÊ¼»¯±ä»»Á÷Ë®Ïß
+//åˆå§‹åŒ–å˜æ¢æµæ°´çº¿
 transform_t trans;
 
 int SDL_main(int argc, char** argv)
@@ -33,12 +32,12 @@ int SDL_main(int argc, char** argv)
 	Window::Init(Width, Height, SDL_RENDERER_ACCELERATED);
 	Window::CreateSurface();
 
-	//¶ÁÈ¡png
+	//è¯»å–png
 	Texture side, top;
 	side.load_png(".\\Textures\\Grid.png");
 	top.load_png(".\\Textures\\Grid.png");
 
-	//Õı·½ÌåµÄÈ«²¿¶¥µã
+	//æ­£æ–¹ä½“çš„å…¨éƒ¨é¡¶ç‚¹
 	object.add_vlist(Geom_Vertex(-1, -1, -1, ColorRGB(255, 255, 0)));// 0
 	object.add_vlist(Geom_Vertex(1, -1, -1, ColorRGB(255,255, 255)));// 1
 	object.add_vlist(Geom_Vertex(1, -1, 1, ColorRGB(0, 255, 255)));// 2
@@ -47,7 +46,7 @@ int SDL_main(int argc, char** argv)
 	object.add_vlist(Geom_Vertex(1, 1, -1, ColorRGB(122, 122,122)));// 5
 	object.add_vlist(Geom_Vertex(1, 1, 1, ColorRGB(246, 135, 144)));// 6
 	object.add_vlist(Geom_Vertex(-1, 1, 1, ColorRGB(0, 255, 0)));// 7
-	//Ìí¼ÓÎïÌåÃæÆ¬
+	//æ·»åŠ ç‰©ä½“é¢ç‰‡
 	object.add_plist(0, 2, 1, top, true, Point2D(0, 0), Point2D(side.width - 1, side.height - 1), Point2D(side.width - 1, 0));// 0 //bottom
 	object.add_plist(2, 0, 3, top, true, Point2D(side.width - 1, side.height - 1), Point2D(0, 0), Point2D(0, side.height - 1));// 1 //bottom
 	object.add_plist(4, 5, 7, top, true, Point2D(0, side.height - 1), Point2D(side.width - 1, side.height - 1), Point2D(0, 0));// 2 //top
@@ -70,21 +69,21 @@ int SDL_main(int argc, char** argv)
 	c.print();
 
 
-	while (true)//ÊÂ¼şÑ­»·£¨äÖÈ¾ºËĞÄ£©
+	while (true)//äº‹ä»¶å¾ªç¯ï¼ˆæ¸²æŸ“æ ¸å¿ƒï¼‰
 	{
 		float s = clock();
 
 		if (Window::EventProc() == 1)
 			break;
 
-		//±ä»»Á÷Ë®Ïß
-		//¾Ö²¿×ø±ê±ä»»ÔÚÏûÏ¢´¦ÀíÖĞÖ´ĞĞ
+		//å˜æ¢æµæ°´çº¿
+		//å±€éƒ¨åæ ‡å˜æ¢åœ¨æ¶ˆæ¯å¤„ç†ä¸­æ‰§è¡Œ
 		trans.Object_to_World(object);
 		trans.back_cull(object, camera);
 		trans.frustum_cull(object, camera);
 		trans.World_to_Camera(object, camera);
 		trans.Camera_to_Perspective_to_Screen(object, camera);
-		//Ö÷äÖÈ¾
+		//ä¸»æ¸²æŸ“
 
 		SDL_FillRect(Window::mSurface, &r, 0x000000);
 		draw_object_baryinterp(object,FILTERMODE_BILINEAR, true,Window::mSurface);
@@ -92,7 +91,7 @@ int SDL_main(int argc, char** argv)
 		SDL_Delay(0);
 
 		float e = clock();
-		//ÏÔÊ¾FPS
+		//æ˜¾ç¤ºFPS
 		if (!(index++ == 6))
 		{
 			FPS += 1000.0f / (e - s);
