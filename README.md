@@ -19,8 +19,10 @@
 
 Phong着色：
 ![Image text](https://github.com/L-Stefano/Computer-Graphic-Rasterize/blob/master/img/pic_shading.png)
+
 Phong光照模型：
 ![Image text](https://github.com/L-Stefano/Computer-Graphic-Rasterize/blob/master/img/pic_phong_specular.png)
+
 最近点采样：
 ![Image text](https://github.com/L-Stefano/Computer-Graphic-Rasterize/blob/master/img/pic_point_sampling.png)
 
