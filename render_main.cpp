@@ -7,91 +7,49 @@
 #include"SDLINIT.h"
 #include"Image.h"
 #include"Math3D.h"
-#include"Rasterization.h"
+#include"Shading.h"
+#include"Render.h"
 #include"Geometry.h"
-#include"Transformation.h"
+#include"Pipeline.h"
 
 using namespace std;
-/*å¸¸é‡*/
-const int Width = 800;//å®é™…åæ ‡èŒƒå›´[0,W-1]
-const int Height = 600;//å®é™…åæ ‡èŒƒå›´[0,H-1]
-const SDL_Rect r{ 0,0,Width,Height };//æ¸…å±ç”¨
+const SDL_Rect r{ 0,0,Width,Height };//ÇåÆÁÓÃ
 float FPS = 0;
-int index=0;//ç”¨äºFPSçš„é‡‡æ ·å‘¨æœŸ
+int index=0;//ÓÃÓÚFPSµÄ²ÉÑùÖÜÆÚ
 string fps;
 
-//åˆå§‹åŒ–æ‘„åƒæœº
-camera_UVN camera(Vector4D(0, 0, 0), Vector4D(1.15, 1.2, -1.2), 200,2, Width - 1, Height - 1,105);
-//åˆå§‹åŒ–ç‰©ä½“
+//³õÊ¼»¯º¯Êı
+void init();
+
+Camera_UVN camera(Vector4D(0, 0, 0), Vector4D(0, 2, -2), 200,2, Width - 1, Height - 1,105);
 Geom_Object object;
-//åˆå§‹åŒ–å˜æ¢æµæ°´çº¿
-transform_t trans;
+Render_List render_list;
+Transform_t trans;
+Light_List light_list;
 
 int SDL_main(int argc, char** argv)
 {
-	Window::Init(Width, Height, SDL_RENDERER_ACCELERATED);
-	Window::CreateSurface();
-
-	//è¯»å–png
-	Texture side, top;
-	side.load_png(".\\Textures\\Grid.png");
-	top.load_png(".\\Textures\\Grid.png");
-
-	//æ­£æ–¹ä½“çš„å…¨éƒ¨é¡¶ç‚¹
-	object.add_vlist(Geom_Vertex(-1, -1, -1, ColorRGB(255, 255, 0)));// 0
-	object.add_vlist(Geom_Vertex(1, -1, -1, ColorRGB(255,255, 255)));// 1
-	object.add_vlist(Geom_Vertex(1, -1, 1, ColorRGB(0, 255, 255)));// 2
-	object.add_vlist(Geom_Vertex(-1, -1, 1, ColorRGB(135, 144, 200)));// 3
-	object.add_vlist(Geom_Vertex(-1, 1, -1, ColorRGB(255, 0, 0)));// 4
-	object.add_vlist(Geom_Vertex(1, 1, -1, ColorRGB(122, 122,122)));// 5
-	object.add_vlist(Geom_Vertex(1, 1, 1, ColorRGB(246, 135, 144)));// 6
-	object.add_vlist(Geom_Vertex(-1, 1, 1, ColorRGB(0, 255, 0)));// 7
-	//æ·»åŠ ç‰©ä½“é¢ç‰‡
-	object.add_plist(0, 2, 1, top, true, Point2D(0, 0), Point2D(side.width - 1, side.height - 1), Point2D(side.width - 1, 0));// 0 //bottom
-	object.add_plist(2, 0, 3, top, true, Point2D(side.width - 1, side.height - 1), Point2D(0, 0), Point2D(0, side.height - 1));// 1 //bottom
-	object.add_plist(4, 5, 7, top, true, Point2D(0, side.height - 1), Point2D(side.width - 1, side.height - 1), Point2D(0, 0));// 2 //top
-	object.add_plist(5, 6, 7, top, true, Point2D(side.width - 1, side.height - 1), Point2D(side.width - 1, 0), Point2D(0, 0));// 3 //top
-	object.add_plist(5, 1, 2, side, true, Point2D(0, 0), Point2D(0, side.height - 1), Point2D(side.width - 1, side.height - 1));// 4
-	object.add_plist(2, 6, 5, side, true, Point2D(side.width - 1, side.height - 1), Point2D(side.width - 1, 0), Point2D(0, 0));// 5
-	object.add_plist(0, 4, 7, side, true, Point2D(side.width - 1, side.height - 1), Point2D(side.width - 1, 0), Point2D(0, 0));// 6
-	object.add_plist(7, 3, 0, side, true, Point2D(0, 0), Point2D(0, side.height - 1), Point2D(side.width - 1, side.height - 1));// 7
-	object.add_plist(0, 1, 4, side, true, Point2D(0, side.height - 1), Point2D(side.width - 1, side.height - 1), Point2D(0, 0));// 8
-	object.add_plist(4, 1, 5, side, true, Point2D(0, 0), Point2D(side.width - 1, side.height - 1), Point2D(side.width - 1, 0));// 9
-	object.add_plist(3, 7, 6, side, true, Point2D(side.width - 1, side.height - 1), Point2D(side.width - 1, 0), Point2D(0, 0));// 10
-	object.add_plist(6, 2, 3, side, true, Point2D(0, 0), Point2D(0, side.height - 1), Point2D(side.width - 1, side.height - 1));// 11
-	object.back_cull = false;
-	object.frustum_cull = true;
-
-
-
-	ColorRGB c(100, 100, 3);
-	c = c*2.0f;
-	c.print();
-
-
-	while (true)//äº‹ä»¶å¾ªç¯ï¼ˆæ¸²æŸ“æ ¸å¿ƒï¼‰
+	init();
+	while (true)//ÊÂ¼şÑ­»·£¨äÖÈ¾ºËĞÄ£©
 	{
 		float s = clock();
 
 		if (Window::EventProc() == 1)
 			break;
 
-		//å˜æ¢æµæ°´çº¿
-		//å±€éƒ¨åæ ‡å˜æ¢åœ¨æ¶ˆæ¯å¤„ç†ä¸­æ‰§è¡Œ
-		trans.Object_to_World(object);
-		trans.back_cull(object, camera);
-		trans.frustum_cull(object, camera);
-		trans.World_to_Camera(object, camera);
-		trans.Camera_to_Perspective_to_Screen(object, camera);
-		//ä¸»æ¸²æŸ“
+		//±ä»»Á÷Ë®Ïß
+		//¾Ö²¿×ø±ê±ä»»ÔÚÏûÏ¢´¦ÀíÖĞÖ´ĞĞ
+		trans.pipeline_renderlist(render_list,camera);
+		//Ö÷äÖÈ¾
 
 		SDL_FillRect(Window::mSurface, &r, 0x000000);
-		draw_object_baryinterp(object,FILTERMODE_BILINEAR, true,Window::mSurface);
+		draw_render_list(render_list,FILTERMODE_POINTSAMPLE,light_list, true, camera, Window::mSurface);
+
 		SDL_UpdateWindowSurface(Window::mWindow);
 		SDL_Delay(0);
 
 		float e = clock();
-		//æ˜¾ç¤ºFPS
+		//ÏÔÊ¾FPS
 		if (!(index++ == 6))
 		{
 			FPS += 1000.0f / (e - s);
@@ -109,4 +67,60 @@ int SDL_main(int argc, char** argv)
 
 	SDL_Quit();
 	return 0;
+}
+void init()
+{
+	//´°¿Ú³õÊ¼»¯
+	Window::Init(Width, Height, SDL_RENDERER_ACCELERATED);
+	Window::CreateSurface();
+
+	//¶ÁÈ¡ÎÆÀí
+	Texture side, top;
+	side.load_png(".\\Textures\\gold_block.png");
+	top.load_png(".\\Textures\\gold_block.png");
+
+	//Õı·½ÌåµÄÈ«²¿¶¥µã
+	object.add_vlist(Geom_Vertex(-1, -1, -1, ColorRGB(1.0f ,1.0f, 0.0f)));// 0
+	object.add_vlist(Geom_Vertex(1, -1, -1, ColorRGB(1.0f, 1.0f, 1.0f)));// 1
+	object.add_vlist(Geom_Vertex(1, -1, 1, ColorRGB(0.0f, 1.0f, 1.0f)));// 2
+	object.add_vlist(Geom_Vertex(-1, -1, 1, ColorRGB(0.0f, 0.5f, 0.78f)));// 3
+	object.add_vlist(Geom_Vertex(-1, 1, -1, ColorRGB(1.0f, 0.0f, 0.0f)));// 4
+	object.add_vlist(Geom_Vertex(1, 1, -1, ColorRGB(0.47f, 0.47f, 0.47f)));// 5
+	object.add_vlist(Geom_Vertex(1, 1, 1, ColorRGB(0.99f, 0.5f, 0.4f)));// 6
+	object.add_vlist(Geom_Vertex(-1, 1, 1, ColorRGB(0.0f, 1.0f, 0.0f)));// 7
+	//Ìí¼ÓÎïÌåÃæÆ¬
+	object.add_plist(0, 2, 1, top, true, Point2D(0, 0), Point2D(side.width - 1, side.height - 1), Point2D(side.width - 1, 0));// 0 //bottom
+	object.add_plist(2, 0, 3, top, true, Point2D(side.width - 1, side.height - 1), Point2D(0, 0), Point2D(0, side.height - 1));// 1 //bottom
+	object.add_plist(4, 5, 7, top, true, Point2D(0, side.height - 1), Point2D(side.width - 1, side.height - 1), Point2D(0, 0));// 2 //top
+	object.add_plist(5, 6, 7, top, true, Point2D(side.width - 1, side.height - 1), Point2D(side.width - 1, 0), Point2D(0, 0));// 3 //top
+	object.add_plist(5, 1, 2, side, true, Point2D(0, 0), Point2D(0, side.height - 1), Point2D(side.width - 1, side.height - 1));// 4
+	object.add_plist(2, 6, 5, side, true, Point2D(side.width - 1, side.height - 1), Point2D(side.width - 1, 0), Point2D(0, 0));// 5
+	object.add_plist(0, 4, 7, side, true, Point2D(side.width - 1, side.height - 1), Point2D(side.width - 1, 0), Point2D(0, 0));// 6
+	object.add_plist(7, 3, 0, side, true, Point2D(0, 0), Point2D(0, side.height - 1), Point2D(side.width - 1, side.height - 1));// 7
+	object.add_plist(0, 1, 4, side, true, Point2D(0, side.height - 1), Point2D(side.width - 1, side.height - 1), Point2D(0, 0));// 8
+	object.add_plist(4, 1, 5, side, true, Point2D(0, 0), Point2D(side.width - 1, side.height - 1), Point2D(side.width - 1, 0));// 9
+	object.add_plist(3, 7, 6, side, true, Point2D(side.width - 1, side.height - 1), Point2D(side.width - 1, 0), Point2D(0, 0));// 10
+	object.add_plist(6, 2, 3, side, true, Point2D(0, 0), Point2D(0, side.height - 1), Point2D(side.width - 1, side.height - 1));// 11
+		//²ÄÖÊ¶¨Òå
+	object.material = Material("NONE", SHADE_MODE_GOURAUD, ColorRGB(1.0f, 1.0f, 1.0f), ColorRGB(0.97f, 0.97f, 0.97f), ColorRGB(1.0f, 1.0f, 1.0f), 16.0f);
+	object.back_cull = true;
+	object.frustum_cull = true;
+
+	object.world_pos = Point4D(-1, 0, 0);
+	render_list.add_vlist(object);
+	object.world_pos = Point4D(-1, 0, 2.5);
+	render_list.add_vlist(object);
+	object.world_pos = Point4D(1.2, 0, 0);
+	render_list.add_vlist(object);
+	object.world_pos = Point4D(1.2, 0, 2.5);
+	render_list.add_vlist(object);
+
+	//¹âÔ´
+	light_list.add_ambient_light(Ambient_Light(ColorRGB(1.0f, 1.0f, 1.0f), ColorRGB(0.025f, 0.025f, 0.025f), true));
+	light_list.add_infinite_light(Infinite_Light(Vector4D(0.3,1, 0.5), ColorRGB(0.2f, 0.7f, 1.0f), ColorRGB(0.7f, 0.7f, 0.7f), true));
+	light_list.add_point_light(Point_Light(Vector4D(1, 1.5, -1.5), ColorRGB(1.0f, 0.55f, 0.15f), ColorRGB(1.0f, 1.0f, 1.0f), 0.3f, 0.25f, 1.2f, true));
+	light_list.add_point_light(Point_Light(Vector4D(-1, 1.5, 1.5), ColorRGB(0.57f, 0.5f, 1.0f), ColorRGB(1.0f, 1.0f, 1.0f), 0.5f, 0.85f, 1.3f, true));
+	//light_list.add_spotlight(Spotlight(Vector4D(0.5, 2.0, 0.5), Vector4D(-1, -1, -1), 0, 70, ColorRGB(0.78f, 0.9f, 0.64f), ColorRGB(1.0f, 1.0f, 1.0f), 1.0f, 0.23f, 1.0f, 0.0004f, true));
+	light_list.add_point_light(Point_Light(Vector4D(0, 1.5, 0.5), ColorRGB(0.5f, 0.7f, 0.8f), ColorRGB(1.0f, 1.0f, 1.0f), 0.74f, 0.475f, 1.523f, true));
+
 }
