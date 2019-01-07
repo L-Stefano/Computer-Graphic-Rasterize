@@ -10,12 +10,17 @@
 1. 线框渲染
 2. 固体色着色
 3. 背面消隐/物体剔除
-4. 重心插值
-5. 透视校正插值
-6. 纹理映射：支持双线性过滤，仅png
-7. 双线程并行光栅化三角形片元（效果不好）
-8. Gouraud着色
-9. Phong着色
+4. z-buffer
+5. 重心插值
+6. 透视校正插值
+7. 纹理映射：支持双线性过滤，仅png
+8. 双线程并行光栅化三角形片元（效果不好）
+9. Gouraud着色
+10. Phong着色
+
+z-buffer：
+
+![Image text](https://github.com/L-Stefano/Computer-Graphic-Rasterize/blob/master/img/z-buffer.png)
 
 Phong着色：
 
