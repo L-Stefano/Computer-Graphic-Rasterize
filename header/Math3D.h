@@ -240,14 +240,8 @@ public:
 typedef class Vector4D
 {
 public:
-	union
-	{
-		float M[4];
-		struct
-		{
-			float x, y, z, w;
-		};
-	};
+	float x, y, z, w;
+
 
 	/*构造函数*/
 	//默认构造函数;
@@ -313,7 +307,8 @@ public:
 	//向量乘以标量
 	inline Vector4D operator *(const float v)const
 	{
-		return Vector4D(this->x * v, this->y * v, this->z * v, w);
+		float x_result = x * v, y_result = y * v, z_result = z * v;
+		return Vector4D(x_result, y_result, z_result, w);
 	}
 	inline Vector4D& operator *=(const float v)
 	{
@@ -322,19 +317,10 @@ public:
 		this->z *= v;
 		return *this;
 	}
-	//重载下标运算符
-	inline float& operator[](size_t n)
-	{
-		return M[n];
-	}
-	inline const float& operator[](size_t n)const
-	{
-		return M[n];
-	}
 	//等性判断
 	inline bool operator == (const Vector4D &v)const
 	{
-		if ((x == v.x)&&(y == v.y)&&(z == v.z))
+		if ((x == v.x) && (y == v.y) && (z == v.z))
 			return true;
 		else
 			return false;
@@ -424,7 +410,7 @@ inline void vector_normalize(Vector4D &v)
 //距离
 inline float vector_distance(const Vector4D &v1, const Vector4D &v2)
 {
-	return(sqrtf(powf(v1.length(), 2) +powf(v2.length(), 2)));
+	return((v1 - v2).length());
 }
 
 //夹角（角度制)
@@ -573,7 +559,7 @@ public:
 		float cos_theta = cosf(deg_to_rad(theta));
 
 		//消除等于零时的数值误差
-		if (abs(sin_theta) < 10E-7) 
+		if (abs(sin_theta) < 10E-7)
 			sin_theta = 0.0f;
 		if (abs(cos_theta) < 10E-7)
 			cos_theta = 0.0f;
@@ -618,17 +604,11 @@ Vector4D matrix_applyToVector(const Vector4D &v, const Matrix4X4 &mat);
 //=====================================================================
 // 颜色
 //=====================================================================
+//将0-255转换为0.0-1.0f的系数
+constexpr float ratio_int_to_float = 0.003921568627451f;
 class ColorRGB
 {
 public:
-	union
-	{
-		int M[3];
-		struct
-		{
-			int R, G, B;
-		};
-	};
 	struct
 	{
 		float R_ratio, G_ratio, B_ratio;
@@ -636,9 +616,14 @@ public:
 
 	/*构造函数*/
 	//默认构造函数;
-	ColorRGB() = default;
+	ColorRGB()
+	{
+		R_ratio = 0.0f;
+		G_ratio = 0.0f;
+		B_ratio = 0.0f;
+
+	}
 	//初始化R, G ,B
-	ColorRGB(int ir, int ig, int ib);
 	ColorRGB(float ir_ratio, float ig_ratio, float ib_ratio);
 
 	//拷贝构造函数
@@ -650,17 +635,24 @@ public:
 	//c1+c2
 	inline ColorRGB operator +(const ColorRGB &v)const
 	{
-		return ColorRGB(std::min(this->R + v.R,255), std::min(this->G + v.G,255), std::min(this->B + v.B,255));
+		return ColorRGB(std::min(this->R_ratio + v.R_ratio, 1.0f), std::min(this->G_ratio + v.G_ratio, 1.0f), std::min(this->B_ratio + v.B_ratio, 1.0f));
+	}
+	inline ColorRGB& operator +=(const ColorRGB &v)
+	{
+		this->R_ratio = std::min(this->R_ratio + v.R_ratio, 1.0f);
+		this->G_ratio = std::min(this->G_ratio + v.G_ratio, 1.0f);
+		this->B_ratio = std::min(this->B_ratio + v.B_ratio, 1.0f);
+		return *this;
 	}
 	//c1-c2
 	inline ColorRGB operator -(const ColorRGB &v)const
 	{
-		return ColorRGB( this->R - v.R, this->G - v.G, this->B - v.B);
+		return ColorRGB(this->R_ratio - v.R_ratio, this->G_ratio - v.G_ratio, this->B_ratio - v.B_ratio);
 	}
 	//-v
 	inline ColorRGB  operator -() const
 	{
-		return ColorRGB(-R, -G, -B);
+		return ColorRGB(-R_ratio, -G_ratio, -B_ratio);
 	}
 	//除以标量
 	inline ColorRGB operator /(const float v)const
@@ -672,7 +664,7 @@ public:
 	inline ColorRGB operator *(const float &v)const
 	{
 		float R_ratio_result = this->R_ratio * v, G_ratio_result = this->G_ratio* v, B_ratio_result = this->B_ratio* v;
-		if ((R_ratio_result > 255) || (G_ratio_result  > 255) || B_ratio_result  > 255)
+		if ((R_ratio_result > 255) || (G_ratio_result > 255) || B_ratio_result > 255)
 			throw std::range_error("The component of color has reached max value.");
 		else
 		{
@@ -682,26 +674,11 @@ public:
 	//颜色调制(右颜色调制左颜色)
 	inline ColorRGB operator *(const ColorRGB &c)const
 	{
-		return ColorRGB(c.R_ratio*this->R, c.G_ratio*this->G, c.B_ratio*this->B);
+		return ColorRGB(c.R_ratio*this->R_ratio, c.G_ratio*this->G_ratio, c.B_ratio*this->B_ratio);
 	}
-	inline ColorRGB& operator *=(const ColorRGB &c)
-	{
-		this->R *= c.R_ratio;
-		this->G *= c.G_ratio;
-		this->B *= c.B_ratio;
-		return *this;
-	}
-	//重载下标运算符
-	inline int& operator[](size_t n)
-	{
-		return M[n];
-	}
-	inline const float& operator[](size_t n)const
-	{
-		return M[n];
-	}
+
 	inline void print()
 	{
-		std::cout << R << std::ends << G << std::ends << B << std::endl;
+		std::cout << R_ratio << std::ends << G_ratio << std::ends << B_ratio << std::endl;
 	}
 };

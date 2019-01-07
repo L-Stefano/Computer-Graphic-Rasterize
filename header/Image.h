@@ -1,7 +1,5 @@
 #pragma once
 #include"Math3D.h"
-#include"Math3D.h"
-#include<zlib.h>
 #include<png.h>
 
 class Texture
@@ -26,9 +24,9 @@ public:
 	inline ColorRGB get_color_point_sampling(int x, int y)
 	{
 		if (color_type == PNG_COLOR_TYPE_RGB_ALPHA)
-			return ColorRGB(rgba[(y * width + x) * 4], rgba[(y * width + x) * 4 + 1], rgba[(y * width + x) * 4 + 2]);
+			return ColorRGB(rgba[(y * width + x) * 4]* ratio_int_to_float, rgba[(y * width + x) * 4 + 1]* ratio_int_to_float, rgba[(y * width + x) * 4 + 2]* ratio_int_to_float);
 		else if (color_type == PNG_COLOR_TYPE_RGB)
-			return ColorRGB(rgba[(y * width + x) * 3], rgba[(y * width + x) * 3 + 1], rgba[(y * width + x) * 3 + 2]);
+			return ColorRGB(rgba[(y * width + x) * 3] * ratio_int_to_float, rgba[(y * width + x) * 3 + 1] * ratio_int_to_float, rgba[(y * width + x) * 3 + 2] * ratio_int_to_float);
 	}
 	inline ColorRGB get_color_bilinear(float x, float y)
 	{
@@ -43,37 +41,37 @@ public:
 			if (x_integer == width - 1)
 			{
 				x_decimal = 0;
-				result.R = rgba[(y_integer * width + x_integer) * 4] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[((y_integer + 1) * width + x_integer) * 4] * (1.0f - x_decimal)*y_decimal;
-				result.G = rgba[(y_integer * width + x_integer) * 4 + 1] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[((y_integer + 1) * width + x_integer) * 4 + 1] * (1.0f - x_decimal)*y_decimal;
-				result.B = rgba[(y_integer * width + x_integer) * 4 + 2] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[((y_integer + 1) * width + x_integer) * 4 + 2] * (1.0f - x_decimal)*y_decimal;
+				result.R_ratio = rgba[(y_integer * width + x_integer) * 4] * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[((y_integer + 1) * width + x_integer) * 4] * ratio_int_to_float * (1.0f - x_decimal)*y_decimal;
+				result.G_ratio = rgba[(y_integer * width + x_integer) * 4 + 1] * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[((y_integer + 1) * width + x_integer) * 4 + 1] * ratio_int_to_float * (1.0f - x_decimal)*y_decimal;
+				result.B_ratio = rgba[(y_integer * width + x_integer) * 4 + 2] * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[((y_integer + 1) * width + x_integer) * 4 + 2] * ratio_int_to_float * (1.0f - x_decimal)*y_decimal;
 			}
 			if (y_integer == height - 1)
 			{
 				y_decimal = 0;
-				result.R = rgba[(y_integer * width + x_integer) * 4] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[(y_integer * width + (x_integer + 1)) * 4] * x_decimal*(1.0f - y_decimal);
-				result.G = rgba[(y_integer * width + x_integer) * 4 + 1] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[(y_integer * width + (x_integer + 1)) * 4+ 1] * x_decimal*(1.0f - y_decimal);
-				result.B = rgba[(y_integer * width + x_integer) * 4 + 2] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[(y_integer * width + (x_integer + 1)) * 4 + 2] * x_decimal*(1.0f - y_decimal);
+				result.R_ratio = rgba[(y_integer * width + x_integer) * 4] * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[(y_integer * width + (x_integer + 1)) * 4] * ratio_int_to_float * x_decimal*(1.0f - y_decimal);
+				result.G_ratio = rgba[(y_integer * width + x_integer) * 4 + 1] * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[(y_integer * width + (x_integer + 1)) * 4+ 1] * ratio_int_to_float * x_decimal*(1.0f - y_decimal);
+				result.B_ratio = rgba[(y_integer * width + x_integer) * 4 + 2] * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[(y_integer * width + (x_integer + 1)) * 4 + 2] * ratio_int_to_float * x_decimal*(1.0f - y_decimal);
 			}
 			else
 			{
-				result.R = rgba[(y_integer * width + x_integer) * 4] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[(y_integer * width + (x_integer + 1)) * 4] * x_decimal*(1.0f - y_decimal) +
-					rgba[((y_integer + 1) * width + x_integer) * 4] * (1.0f - x_decimal)*y_decimal +
-					rgba[((y_integer + 1) * width + (x_integer + 1)) * 4] * x_decimal*y_decimal;
-				result.G = rgba[(y_integer * width + x_integer) * 4 + 1] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[(y_integer * width + (x_integer + 1)) * 4 + 1] * x_decimal*(1.0f - y_decimal) +
-					rgba[((y_integer + 1) * width + x_integer) * 4 + 1] * (1.0f - x_decimal)*y_decimal +
-					rgba[((y_integer + 1) * width + (x_integer + 1)) * 4 + 1] * x_decimal*y_decimal;
-				result.B = rgba[(y_integer * width + x_integer) * 4 + 2] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[(y_integer * width + (x_integer + 1)) * 4 + 2] * x_decimal*(1.0f - y_decimal) +
-					rgba[((y_integer + 1) * width + x_integer) * 4 + 2] * (1.0f - x_decimal)*y_decimal +
-					rgba[((y_integer + 1) * width + (x_integer + 1)) * 4 + 2] * x_decimal*y_decimal;
+				result.R_ratio = rgba[(y_integer * width + x_integer) * 4] * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[(y_integer * width + (x_integer + 1)) * 4] * ratio_int_to_float * x_decimal*(1.0f - y_decimal) +
+					rgba[((y_integer + 1) * width + x_integer) * 4] * ratio_int_to_float * (1.0f - x_decimal)*y_decimal +
+					rgba[((y_integer + 1) * width + (x_integer + 1)) * 4] * ratio_int_to_float * x_decimal*y_decimal;
+				result.G_ratio = rgba[(y_integer * width + x_integer) * 4 + 1] * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[(y_integer * width + (x_integer + 1)) * 4 + 1] * ratio_int_to_float * x_decimal*(1.0f - y_decimal) +
+					rgba[((y_integer + 1) * width + x_integer) * 4 + 1] * ratio_int_to_float * (1.0f - x_decimal)*y_decimal +
+					rgba[((y_integer + 1) * width + (x_integer + 1)) * 4 + 1] * ratio_int_to_float * x_decimal*y_decimal;
+				result.B_ratio = rgba[(y_integer * width + x_integer) * 4 + 2] * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[(y_integer * width + (x_integer + 1)) * 4 + 2] * ratio_int_to_float * x_decimal*(1.0f - y_decimal) +
+					rgba[((y_integer + 1) * width + x_integer) * 4 + 2] * ratio_int_to_float * (1.0f - x_decimal)*y_decimal +
+					rgba[((y_integer + 1) * width + (x_integer + 1)) * 4 + 2] * ratio_int_to_float * x_decimal*y_decimal;
 			}
 			return result;
 		}
@@ -82,37 +80,37 @@ public:
 			if (x_integer == width - 1)
 			{
 				x_decimal = 0;
-				result.R = rgba[(y_integer * width + x_integer) * 3] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[((y_integer + 1) * width + x_integer) * 3] * (1.0f - x_decimal)*y_decimal;
-				result.G = rgba[(y_integer * width + x_integer) * 3 + 1] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[((y_integer + 1) * width + x_integer) * 3 + 1] * (1.0f - x_decimal)*y_decimal;
-				result.B = rgba[(y_integer * width + x_integer) * 3 + 2] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[((y_integer + 1) * width + x_integer) * 3 + 2] * (1.0f - x_decimal)*y_decimal;
+				result.R_ratio = rgba[(y_integer * width + x_integer) * 3] * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[((y_integer + 1) * width + x_integer) * 3] * ratio_int_to_float * (1.0f - x_decimal)*y_decimal;
+				result.G_ratio = rgba[(y_integer * width + x_integer) * 3 + 1] * ratio_int_to_float * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[((y_integer + 1) * width + x_integer) * 3 + 1] * ratio_int_to_float * (1.0f - x_decimal)*y_decimal;
+				result.B_ratio = rgba[(y_integer * width + x_integer) * 3 + 2] * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[((y_integer + 1) * width + x_integer) * 3 + 2] * ratio_int_to_float * (1.0f - x_decimal)*y_decimal;
 			}
 			if (y_integer == height - 1)
 			{
 				y_decimal = 0;
-				result.R = rgba[(y_integer * width + x_integer) * 3] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[(y_integer * width + (x_integer + 1)) * 3] * x_decimal*(1.0f - y_decimal);
-				result.G = rgba[(y_integer * width + x_integer) * 3 + 1] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[(y_integer * width + (x_integer + 1)) * 3 + 1] * x_decimal*(1.0f - y_decimal);
-				result.B = rgba[(y_integer * width + x_integer) * 3 + 2] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[(y_integer * width + (x_integer + 1)) * 3 + 2] * x_decimal*(1.0f - y_decimal);
+				result.R_ratio = rgba[(y_integer * width + x_integer) * 3] * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[(y_integer * width + (x_integer + 1)) * 3] * ratio_int_to_float * x_decimal*(1.0f - y_decimal);
+				result.G_ratio = rgba[(y_integer * width + x_integer) * 3 + 1] * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[(y_integer * width + (x_integer + 1)) * 3 + 1] * ratio_int_to_float * x_decimal*(1.0f - y_decimal);
+				result.B_ratio = rgba[(y_integer * width + x_integer) * 3 + 2] * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[(y_integer * width + (x_integer + 1)) * 3 + 2] * ratio_int_to_float * x_decimal*(1.0f - y_decimal);
 			}
 			else
 			{
-				result.R = rgba[(y_integer * width + x_integer) * 3] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[(y_integer * width + (x_integer + 1)) * 3] * x_decimal*(1.0f - y_decimal) +
-					rgba[((y_integer + 1) * width + x_integer) * 3] * (1.0f - x_decimal)*y_decimal +
-					rgba[((y_integer + 1) * width + (x_integer + 1)) * 3] * x_decimal*y_decimal;
-				result.G = rgba[(y_integer * width + x_integer) * 3 + 1] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[(y_integer * width + (x_integer + 1)) * 3 + 1] * x_decimal*(1.0f - y_decimal) +
-					rgba[((y_integer + 1) * width + x_integer) * 3 + 1] * (1.0f - x_decimal)*y_decimal +
-					rgba[((y_integer + 1) * width + (x_integer + 1)) * 3 + 1] * x_decimal*y_decimal;
-				result.B = rgba[(y_integer * width + x_integer) * 3 + 2] * (1.0f - x_decimal)*(1.0f - y_decimal) +
-					rgba[(y_integer * width + (x_integer + 1)) * 3 + 2] * x_decimal*(1.0f - y_decimal) +
-					rgba[((y_integer + 1) * width + x_integer) * 3 + 2] * (1.0f - x_decimal)*y_decimal +
-					rgba[((y_integer + 1) * width + (x_integer + 1)) * 3 + 2] * x_decimal*y_decimal;
+				result.R_ratio = rgba[(y_integer * width + x_integer) * 3] * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[(y_integer * width + (x_integer + 1)) * 3] * ratio_int_to_float* x_decimal*(1.0f - y_decimal) +
+					rgba[((y_integer + 1) * width + x_integer) * 3] * ratio_int_to_float * (1.0f - x_decimal)*y_decimal +
+					rgba[((y_integer + 1) * width + (x_integer + 1)) * 3] * ratio_int_to_float * x_decimal*y_decimal;
+				result.G_ratio = rgba[(y_integer * width + x_integer) * 3 + 1] * ratio_int_to_float * (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[(y_integer * width + (x_integer + 1)) * 3 + 1] * ratio_int_to_float* x_decimal*(1.0f - y_decimal) +
+					rgba[((y_integer + 1) * width + x_integer) * 3 + 1] * ratio_int_to_float * (1.0f - x_decimal)*y_decimal +
+					rgba[((y_integer + 1) * width + (x_integer + 1)) * 3 + 1] * ratio_int_to_float * x_decimal*y_decimal;
+				result.B_ratio = rgba[(y_integer * width + x_integer) * 3 + 2] * ratio_int_to_float* (1.0f - x_decimal)*(1.0f - y_decimal) +
+					rgba[(y_integer * width + (x_integer + 1)) * 3 + 2] * ratio_int_to_float* x_decimal*(1.0f - y_decimal) +
+					rgba[((y_integer + 1) * width + x_integer) * 3 + 2] * ratio_int_to_float* (1.0f - x_decimal)*y_decimal +
+					rgba[((y_integer + 1) * width + (x_integer + 1)) * 3 + 2] * ratio_int_to_float * x_decimal*y_decimal;
 			}
 			return result;
 		}
