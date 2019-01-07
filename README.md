@@ -18,6 +18,10 @@
 9. Gouraud着色
 10. Phong着色
 
+mipmap：
+
+![Image text](https://github.com/L-Stefano/Computer-Graphic-Rasterize/blob/master/img/mipmap.png)
+
 z-buffer：
 
 ![Image text](https://github.com/L-Stefano/Computer-Graphic-Rasterize/blob/master/img/z-buffer.png)
