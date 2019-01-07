@@ -11,7 +11,17 @@ Vector4D::Vector4D()
 	w = 1;
 }
 
-Vector4D::Vector4D(float ix, float iy, float iz, float iw) : x(ix), y(iy), z(iz) { if (iw != 0 || iw != 1)w = 1; }
+Vector4D::Vector4D(float ix, float iy, float iz, float iw)
+{ 
+	if (iw != 0 || iw != 1)
+		w = 1;
+	else
+		w = iw;
+	x = ix;
+	y = iy;
+	z = iz;
+
+}
 
 Vector4D::Vector4D(const Vector4D & a) : x(a.x), y(a.y), z(a.z), w(a.w) {}
 
@@ -47,46 +57,31 @@ Matrix4X4 matrix_scale(const Matrix4X4 & mat, float scale)
 Vector4D matrix_applyToVector(const Vector4D & v, const Matrix4X4 & mat)
 {
 	Vector4D result;
-	for (int i = 0; i < 4; i++)
-	{
+
 		for (int j = 0; j < 4; j++)
 		{
-			result[i] = v.x*mat.m[0][i] + v.y*mat.m[1][i] + v.z *mat.m[2][i] + v.w *mat.m[3][i];
+			result.x = v.x*mat.m[0][0] + v.y*mat.m[1][0] + v.z *mat.m[2][0] + v.w *mat.m[3][0];
+			result.y = v.x*mat.m[0][1] + v.y*mat.m[1][1] + v.z *mat.m[2][1] + v.w *mat.m[3][1];
+			result.z = v.x*mat.m[0][2] + v.y*mat.m[1][2] + v.z *mat.m[2][2] + v.w *mat.m[3][2];
+			result.w = v.x*mat.m[0][3] + v.y*mat.m[1][3] + v.z *mat.m[2][3] + v.w *mat.m[3][3];
 		}
-	}
+	
 	return result;
-}
-
-ColorRGB::ColorRGB(int ir, int ig, int ib)
-{
-	if ((ir < 0 || ir>255) || (ig < 0 || ig>255) || (ib < 0 || ib>255))
-		throw std::logic_error("Wrong Value of RGB");
-	R = ir;
-	G = ig;
-	B = ib;
-	R_ratio = (float)R / 255;
-	G_ratio = (float)G / 255;
-	B_ratio = (float)B / 255;
 }
 
 ColorRGB::ColorRGB(float ir_ratio, float ig_ratio, float ib_ratio)
 {
-	if ((ir_ratio < 0 || ir_ratio>1) || (ig_ratio < 0 || ig_ratio>1) || (ib_ratio < 0 || ib_ratio>1))
-		throw std::logic_error("Wrong Value of RGB");
+	if (ir_ratio > 1) R_ratio = 1;
+	if (ir_ratio > 1) G_ratio = 1;
+	if (ir_ratio > 1) B_ratio = 1;
 	R_ratio = ir_ratio;
 	G_ratio = ig_ratio;
 	B_ratio = ib_ratio;
-	R = ir_ratio * 255;
-	G = ig_ratio * 255;
-	B = ib_ratio * 255;
 }
 
 
 ColorRGB::ColorRGB(const ColorRGB & a)
 {
-	this->R = a.R;
-	this->G = a.G;
-	this->B = a.B;
 	this->R_ratio = a.R_ratio;
 	this->G_ratio = a.G_ratio;
 	this->B_ratio = a.B_ratio;

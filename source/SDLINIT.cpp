@@ -5,9 +5,10 @@ SDL_Renderer* Window::mRenderer = nullptr;
 SDL_Surface * Window::mSurface = nullptr;
 SDL_Event Window::mEvent;
 
-extern camera_UVN camera;
-extern transform_t trans;
+extern Camera_UVN camera;
+extern Transform_t trans;
 extern Geom_Object object;
+extern Render_List render_list;
 
 //用于保存鼠标偏移量
 int mousexdown_rotate;
@@ -98,16 +99,16 @@ int Window::EventProc()
 				camera.cam_pos.y -= 0.1;
 				break;
 			case SDLK_b:
-				if (object.back_cull)
-					object.back_cull = false;
+				if (render_list.object_list[0].back_cull)
+					render_list.object_list[0].back_cull = false;
 				else
-					object.back_cull = true;
+					render_list.object_list[0].back_cull = true;
 				break;
 			case SDLK_o:
-				if (object.frustum_cull)
-					object.frustum_cull = false;
+				if (render_list.object_list[0].frustum_cull)
+					render_list.object_list[0].frustum_cull = false;
 				else
-					object.frustum_cull = true;
+					render_list.object_list[0].frustum_cull = true;
 				break;
 			}
 			break;
@@ -143,7 +144,8 @@ int Window::EventProc()
 			break;
 		}
 	}
-	trans.Object_self(object,1, 1, 1, Vector4D(0, 1, 0), mousexrel_rotate % 360, Vector4D(1, 0, 0), mouseyrel_rotate % 360, Vector4D(0, 0, 1), z_rotate % 360);
+	for (auto &i : render_list.object_list)
+		trans.Object_self(i, 1, 1, 1, Vector4D(0, 1, 0), mousexrel_rotate % 360, Vector4D(1, 0, 0), mouseyrel_rotate % 360, Vector4D(0, 0, 1), z_rotate % 360);
 	camera.camera_update();
 	return 0;
 }
